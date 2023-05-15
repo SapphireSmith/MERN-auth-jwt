@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken'
 const JWT_SECRET = 'jwtsceret';
 
 
-//*** midleware for verify user */
+//*** midleware for verify  user */
 
 export const verifyUser = async (req, res, next) => {
 
