@@ -11,15 +11,12 @@ const app = express();
 
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(express.json())
-app.use(cors({
-    origin:'https://mern-auth-2kq7.onrender.com'
-}));
+app.use(cors());
 app.use(morgan('tiny'));
 app.disable('x-power-by') //less hackers know aabout our stack
 //**API routes */
 app.use('/api', router)
 
-const port = 7000;
 
 //**HTTP get requiest */
 
@@ -29,7 +26,7 @@ app.get('/', (req, res) => {
 
 
 connect().then(() => {
-    app.listen(port, () => {
+    app.listen(4000, () => {
         console.log(`Server running on http://localhost:${port}`);
     })
 }).catch((error) => {
