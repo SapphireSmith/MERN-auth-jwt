@@ -19,7 +19,7 @@ app.disable('x-power-by') //less hackers know aabout our stack
 //**API routes */
 app.use('/api', router)
 
-const port = 5000;
+const port = 7000;
 
 //**HTTP get requiest */
 
