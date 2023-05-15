@@ -1,9 +1,9 @@
-import userModel from "../model/user.model.js";
+import {UserModel} from "../model/User.model.js";
 import OTP from 'otp-generator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv';
-dotenv.config();
+import UserModel from "../model/User.model.js";
+
 
 
 const JWT_SECRET = 'jwtsceret';
@@ -17,7 +17,7 @@ export const verifyUser = async (req, res, next) => {
         const { username } = req.method === 'GET' ? req.query : req.body;
 
         //check the user existance
-        let exist = await userModel.findOne({ username });
+        let exist = await UserModel.findOne({ username });
         if (!exist) return res.status(404).send({ error: "can't find the user!" });
         next();
 
@@ -93,7 +93,7 @@ export const login = async (req, res) => {
 
     try {
         //check for user in the db
-        const user = await userModel.findOne({ username });
+        const user = await UserModel.findOne({ username });
 
         if (!user) {
             return res.status(404).send({ error: "User not found" });
@@ -131,7 +131,7 @@ export const getUser = async (req, res) => {
     try {
         if (!username) return res.status(501).send({ err: "Invalid Username" });
 
-        const user = await userModel.findOne({ username }).select("-password");
+        const user = await UserModel.findOne({ username }).select("-password");
 
         if (!user) {
             return res.status(404).send({ error: " Couldn't find the user " })
@@ -156,7 +156,7 @@ export const updateUser = async (req, res) => {
             const body = req.body;
 
             //update the record
-            userModel.updateOne({ _id: userId }, body)
+            UserModel.updateOne({ _id: userId }, body)
                 .then(() => {
                     return res.status(201).send({ msg: "Record Updated" })
                 }).catch((err) => {
@@ -219,7 +219,7 @@ export const resetPassword = async (req, res) => {
         const { username, password } = req.body;
 
         // Find the user based on the given username
-        const user = await userModel.findOne({ username });
+        const user = await UserModel.findOne({ username });
 
         if (!user) {
             return res.status(404).send({ msg: "User not found" });
@@ -229,7 +229,7 @@ export const resetPassword = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Update the user's password
-        await userModel.updateOne({ username }, { password: hashedPassword });
+        await UserModel.updateOne({ username }, { password: hashedPassword });
 
         return res.status(201).send({ msg: "Record Updated.." });
 
