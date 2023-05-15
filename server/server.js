@@ -11,7 +11,9 @@ const app = express();
 
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(express.json())
-app.use(cors());
+app.use(cors({
+    origin:'https://mern-auth-2kq7.onrender.com'
+}));
 app.use(morgan('tiny'));
 app.disable('x-power-by') //less hackers know aabout our stack
 //**API routes */
