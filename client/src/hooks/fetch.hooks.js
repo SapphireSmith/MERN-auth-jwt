@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getUsername } from "../helper/helpers";
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = 'https://auth-backend-w15s.onrender.com';
 
 const useFetch = (query) => {
     const [data, setData] = useState({ isLoading: false, apiData: undefined, status: null, serverError: null });

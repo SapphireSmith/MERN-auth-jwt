@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode'
 
-axios.defaults.baseURL = 'https://mern-auth-server-okh3.onrender.com'
+axios.defaults.baseURL = 'https://auth-backend-w15s.onrender.com'
 
 
 //**Make api request */
