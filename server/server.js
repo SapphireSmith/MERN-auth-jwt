@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 connect().then(() => {
     app.listen(4000, () => {
-        console.log(`Server running on http://localhost:${port}`);
+        console.log(`Server running on http://localhost:4000`);
     })
 }).catch((error) => {
     console.log(error);
