@@ -21,9 +21,8 @@ app.use('/api', router)
 //**HTTP get requiest */
 
 app.get('/', (req, res) => {
-    res.status(201).json("Home route");
+    res.sendStatus(200)
 })
-
 
 connect().then(() => {
     app.listen(4000, () => {
