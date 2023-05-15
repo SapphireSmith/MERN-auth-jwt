@@ -3,8 +3,8 @@ import mailGen from 'mailgen';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const email = process.env.EMAIL;
-const password = process.env.PASSWORD;
+const email = "tia.friesen54@ethereal.email";
+const password = "BNV48gh7WtsdxXuZT9";
 
 
 let nodeConfig = {

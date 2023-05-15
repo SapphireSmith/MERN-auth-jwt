@@ -1,43 +1,59 @@
 import React, { useState } from 'react'
 import styles from '../styles/Username.module.css';
 import extend from '../styles/Profile.module.css'
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import avatar from '../assets/profile.png'
 import { useFormik } from 'formik'
 import { profileValidation } from '../helper/validate';
 import convertToBase64 from '../helper/convert';
+import useFetch from '../hooks/fetch.hooks';
+import { updateUser } from '../helper/helpers';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
 
-  const [file,setFile] = useState();
+  const [file, setFile] = useState();
+  const [{ apiData, isLoading, serverError }] = useFetch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      mobile: '',
-      address: ''
+      firstName: apiData?.firstName || '',
+      lastName: apiData?.lastName || '',
+      email: apiData?.email || '',
+      mobile: apiData?.mobile || '',
+      address: apiData?.address || ''
     },
+    enableReinitialize: true,
     validate: profileValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      values = await Object.assign(values, { profile: file || '' })
+      values = await Object.assign(values, { profile: file || apiData?.profile || '' })
+      let updatePromise = updateUser(values)
       console.log(values);
+      toast.promise(updatePromise, {
+        loading: 'Updating',
+        success: <b>Update successfully...!</b>,
+        error: <b>Could not Update</b>
+      })
     }
   })
 
 
   const onUpload = async e => {
     const base64 = await convertToBase64(e.target.files[0]);
-    console.log(base64);
     setFile(base64);
   }
 
-  const userLogout = ()=>{
-    console.log('Loging Out....');
+  const userLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/')
   }
+
+
+  if (isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+  if (serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
 
   return (
     <div className="container mx-auto">
@@ -57,7 +73,7 @@ const Profile = () => {
           <form className='py-1' onSubmit={formik.handleSubmit}>
             <div className='profile flex justify-center py-4'>
               <label htmlFor="profile">
-                <img src={file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
+                <img src={apiData?.profile || file || avatar} className={`${styles.profile_img} ${extend.profile_img}`} alt="avatar" />
               </label>
 
               <input onChange={onUpload} type="file" id='profile' name='profile' />

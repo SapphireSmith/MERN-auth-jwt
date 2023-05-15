@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
-import { Toaster } from 'react-hot-toast';
+import React, { useState, } from 'react'
+import { Toaster, toast } from 'react-hot-toast';
 import styles from '../styles/Username.module.css';
 import { useFormik } from 'formik'
 import avatar from '../assets/profile.png'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import converToBase64 from '../helper/convert'
 import { registerValidation } from '../helper/validate';
+import { registerUser } from '../helper/helpers';
 
 const Register = () => {
 
-  const [file,setFile] = useState()
-
+  const [file, setFile] = useState()
+  const navigate = useNavigate()
 
   const formik = useFormik({
     initialValues: {
@@ -19,18 +20,25 @@ const Register = () => {
       password: ''
     },
 
-    validate:registerValidation,
+    validate: registerValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      values = await Object.assign(values, {profile : file || ''})
-      console.log(values);
+      values = await Object.assign(values, { profile: file || '' })
+      let registerPromise = registerUser(values);
+      toast.promise(registerPromise, {
+        loading: "Creating...",
+        success: <b>Register successfully...!</b>,
+        error: <b>Couldn't Register</b>
+      })
+
+      registerPromise.then(() => { navigate('/') })
     }
   })
 
 
-  const onUpload = async (e)=>{
-    const base64 = await converToBase64(e.target.files[0]) ;
+  const onUpload = async (e) => {
+    const base64 = await converToBase64(e.target.files[0]);
     setFile(base64);
   }
   return (

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -9,6 +10,9 @@ import Recovery from "./components/Recovery";
 import Reset from "./components/Reset";
 import PageNotFound from "./components/PageNotFound";
 import Username from "./components/Username";
+
+//** authorize middleware */
+import { AuthorizeUser, ProtectRoute } from "./middleware/auth";
 
 
 /**Root routes*/
@@ -23,11 +27,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/password',
-    element: <Password />
+    element: <ProtectRoute><Password /></ProtectRoute>
   },
   {
     path: '/profile',
-    element: <Profile />
+    element: <AuthorizeUser><Profile /></AuthorizeUser>
   },
   {
     path: '/recovery',

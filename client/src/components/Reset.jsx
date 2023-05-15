@@ -1,24 +1,50 @@
 import React from 'react'
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import styles from '../styles/Username.module.css';
 import { useFormik } from 'formik'
 import { resetPaswordValidation } from '../helper/validate';
+import { useAuthStore } from '../store/store';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { resetPassword } from '../helper/helpers';
+import useFetch from '../hooks/fetch.hooks'
 
 const Reset = () => {
+
+  const { username } = useAuthStore(state => state.auth);
+  const navigate = useNavigate();
+  const [{ isLoading, apiData, status, serverError }] = useFetch('createResetSession')
+
 
   const formik = useFormik({
     initialValues: {
       password: '',
-      confirm_pwd:''
+      confirm_pwd: ''
     },
-    validate:resetPaswordValidation,
+    validate: resetPaswordValidation,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      console.log(values);
+      const resetPasswordPromise = resetPassword({ username, password: values.password })
+
+      toast.promise(resetPasswordPromise,{
+        loading:"Updating password",
+        success:"Password changed",
+        error:(res)=>{
+          console.log(res);
+          return res.data
+        }
+      })
+      resetPasswordPromise.then(()=>{
+        navigate('/')
+      })
     }
   })
 
+
+
+  if (isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>
+  if (serverError) return <h1 className='text-xl text-red-500'>{serverError.messsage}</h1>
+  if (status && status !== 201) return <Navigate to={'/password'} replace={true} ></Navigate>
 
   return (
     <div className="container mx-auto">
@@ -39,7 +65,7 @@ const Reset = () => {
             <div className="textbox flex flex-col items-center gap-6">
               <input {...formik.getFieldProps('password')} className={styles.textbox} type="text" placeholder='New Password' />
               <input {...formik.getFieldProps('confirm_pwd')} className={styles.textbox} type="text" placeholder='Repeat Password' />
-              <button className={`${styles.btn}  bg-indigo-500`}  type='submit'>Reset</button>
+              <button className={`${styles.btn}  bg-indigo-500`} type='submit'>Reset</button>
             </div>
 
           </form>

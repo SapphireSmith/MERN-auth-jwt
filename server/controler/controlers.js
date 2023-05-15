@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = 'jwtsceret';
 
 
 //*** midleware for verify user */
@@ -203,19 +203,18 @@ export const createResetSession = async (req, res) => {
     // Check if there is already an active reset session
     if (req.app.locals.resetSession) {
         req.app.locals.resetSession = false; // Set the reset session flag to false so that it can't be used again
-        return res.status(201).send({ msg: "Access Granted..." }); // Return a success message with status 201
+        return res.status(201).send({ flag: req.app.locals.resetSession }); // Return a success message with status 201
     }
-    
+
     // If there is no active reset session, return an error message with status 440
     return res.status(440).send({ error: "Session expired!" });
 }
 
 //PUT
-
 export const resetPassword = async (req, res) => {
     try {
 
-        if (!req.app.locals.resetSession) return res.status(440).send({ error: "Session expired!" })
+        if (req.app.locals.resetSession) return res.status(440).send({ error: "Session expired!" })
 
         const { username, password } = req.body;
 
@@ -239,84 +238,3 @@ export const resetPassword = async (req, res) => {
         return res.status(500).send({ msg: "Internal server error" });
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const resetPassword = async (req, res) => {
-//     try {
-//         const { username, password } = req.body;
-
-//         try {
-//             userModel.findOne({ username })
-//                 .then((user) => {
-//                     bcrypt.hash(password, 10)
-//                         .then((hashedPassword) => {
-//                             userModel.updateOne({ username: user.username }, { password: hashedPassword }, (err, data) => {
-//                                 if (err) throw err;
-//                                 return res.status(201).send({ msg: "Record Updated.." });
-//                             });
-//                         })
-//                         .catch((err) => {
-//                             return res.status(500).send({
-//                                 msg: "Enable to Hashed password"
-//                             })
-//                         })
-//                 })
-//         } catch (error) {
-
-//         }
-//     } catch (error) {
-
-//     }
-// }
-
