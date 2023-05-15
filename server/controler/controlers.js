@@ -2,7 +2,6 @@ import {UserModel} from "../model/User.model.js";
 import OTP from 'otp-generator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import UserModel from "../model/User.model.js";
 
 
 
